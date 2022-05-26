@@ -1,12 +1,12 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { auth, googleAuthProvider } from "./configureMeFirebase";
-import { signInWithPopup } from "firebase/auth"
+import { signInWithPopup, User } from "firebase/auth"
 
 
 export function AuthDemoStart(): JSX.Element {
     const [lastAPIReply, setLastAPIReply] = useState<string>("");
-
+    const [user, setUser] = useState <User | null>();
 
     async function handleFetchTimeClicked() {
         const reply = await axios.get("http://localhost:4000/");
@@ -21,7 +21,9 @@ export function AuthDemoStart(): JSX.Element {
 
     async function handleSignInClicked() {
         const userCredentials = await signInWithPopup(auth, googleAuthProvider);
-        console.log(userCredentials);
+        const retrievedUser: User = userCredentials.user;
+        setUser(retrievedUser);
+
     }
 
     return (
@@ -30,7 +32,12 @@ export function AuthDemoStart(): JSX.Element {
 
             <button onClick={handleSignInClicked}>Sign in</button>
             <button onClick={() => alert("not implemented")}>Sign out</button>
-
+                {user?.photoURL && 
+                    <>
+                        <div>User: {user?.displayName}</div> 
+                        <img src={user?.photoURL} alt="userprofileimg" />
+                    </>
+                }
             <hr />
             <h3>Talk to the API</h3>
             <button onClick={handleFetchTimeClicked}>Fetch Time</button>
