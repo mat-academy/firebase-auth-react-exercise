@@ -1,5 +1,8 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { auth, googleAuthProvider } from "./configureMeFirebase";
+import { signInWithPopup } from "firebase/auth"
+
 
 export function AuthDemoStart(): JSX.Element {
     const [lastAPIReply, setLastAPIReply] = useState<string>("");
@@ -16,11 +19,16 @@ export function AuthDemoStart(): JSX.Element {
         setLastAPIReply(reply.data);
     }
 
+    async function handleSignInClicked() {
+        const userCredentials = await signInWithPopup(auth, googleAuthProvider);
+        console.log(userCredentials);
+    }
+
     return (
         <div>
             <h2>Auth Demo</h2>
 
-            <button onClick={() => alert("not implemented")}>Sign in</button>
+            <button onClick={handleSignInClicked}>Sign in</button>
             <button onClick={() => alert("not implemented")}>Sign out</button>
 
             <hr />
