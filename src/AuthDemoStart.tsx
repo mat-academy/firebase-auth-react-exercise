@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { auth, googleAuthProvider } from "./configureMeFirebase";
 import { signInWithPopup, User } from "firebase/auth"
 
-
 export function AuthDemoStart(): JSX.Element {
     const [lastAPIReply, setLastAPIReply] = useState<string>("");
     const [user, setUser] = useState <User | null>();
@@ -23,7 +22,11 @@ export function AuthDemoStart(): JSX.Element {
         const userCredentials = await signInWithPopup(auth, googleAuthProvider);
         const retrievedUser: User = userCredentials.user;
         setUser(retrievedUser);
+    }
 
+    async function handleSignOutClicked() {
+        auth.signOut();
+        setUser(null);
     }
 
     return (
@@ -31,10 +34,10 @@ export function AuthDemoStart(): JSX.Element {
             <h2>Auth Demo</h2>
 
             <button onClick={handleSignInClicked}>Sign in</button>
-            <button onClick={() => alert("not implemented")}>Sign out</button>
+            <button onClick={handleSignOutClicked}>Sign out</button>
                 {user?.photoURL && 
                     <>
-                        <div>User: {user?.displayName}</div> 
+                        <div>Signed in: {user?.displayName}</div> 
                         <img src={user?.photoURL} alt="userprofileimg" />
                     </>
                 }
